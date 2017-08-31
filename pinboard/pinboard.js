@@ -1,7 +1,7 @@
-const CONFIG = require('../../res/config.json');
+const CONFIG = require('../config.json');
 const FS = require('fs');
 const Discord = require('discord.js');
-const Menus = require('../menu/Menus');
+const RC = require('reaction-core');
 
 class Pinboard {
   constructor(client, server, data) {
@@ -14,7 +14,7 @@ class Pinboard {
     Object.defineProperty(this, 'min', {value:data.min});
     Object.defineProperty(this, 'adminInsta', {value:data.adminInsta});
 
-    this.caches = JSON.parse(FS.readFileSync('./src/pinboard/cache.json', 'utf-8'))[this.name];
+    this.caches = JSON.parse(FS.readFileSync(`${__dirname}/cache.json`, 'utf-8'))[this.name];
   }
 
   Update(rxnMsg) {
@@ -106,7 +106,7 @@ function CreatePin(pinboard, msg, count) {
   else pin.setColor(0xb0f747);
 
   //create a menu message
-  menuPin = new Menus.Message(pinboard.client, pin, pinboard.channel, true);
+  menuPin = new RC.Message(pinboard.client, pin, pinboard.channel, true);
   //add a pinboard menu
   menuPin.AddMenu(MenuItems, {board: pinboard});
   return menuPin;
@@ -122,7 +122,7 @@ function AdminReacted(pinboard, rxnMsg) {
 }
 
 const MenuItems = [
-  {emoji: Menus.Buttons.Confirm, Callback: (user, client, message, args = undefined) => {
+  {emoji: '✅', Callback: (user, client, message, args = undefined) => {
     //Get the pinboard of the pin
     var pinboard = args.board;
     //Turn the original embed into a sendable embed (identical)
